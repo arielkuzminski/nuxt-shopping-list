@@ -1,7 +1,7 @@
 import { addNewItem } from "../db/items";
-import type { AddItemRequest, AddItemResponse } from "../../types/item";
+import type { AddItemRequest } from "../../types/item";
 
-export default defineEventHandler<AddItemResponse>(async (event) => {
+export default defineEventHandler(async (event) => {
   try {
     const body = await readBody<AddItemRequest>(event);
 

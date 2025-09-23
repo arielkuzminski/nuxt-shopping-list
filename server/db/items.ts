@@ -1,5 +1,3 @@
-import { Item } from "../../types/item";
-
 export async function initializeDatabase() {
   const db = useDatabase("myDB");
 
