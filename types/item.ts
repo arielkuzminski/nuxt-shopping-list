@@ -7,7 +7,11 @@ export interface AddItemRequest {
   item: string;
 }
 
-export interface AddItemResponse {
+export interface DeleteItemRequest {
+  itemId: number;
+}
+
+export interface FetchItemsResponse {
   success: boolean;
   items: Item[];
 }

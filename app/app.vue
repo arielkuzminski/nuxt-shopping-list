@@ -2,7 +2,9 @@
   <div>
     <div>
       <ul>
-        <li v-for="item in items || []" :key="item.id">{{ item.name }}</li>
+        <li v-for="item in items || []" :key="item.id">
+          {{ item.name }} <button @click="onDelete(item.id)">X</button>
+        </li>
       </ul>
     </div>
 
@@ -15,7 +17,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { Item, AddItemResponse } from "../types/item";
+import type { Item, FetchItemsResponse } from "../types/item";
 
 const item = ref(""); // State for the input field
 const items = ref<Item[]>([]);
@@ -24,8 +26,17 @@ const items = ref<Item[]>([]);
 const { data } = await useFetch<Item[]>("/api/getItems");
 items.value = data.value || [];
 
+async function onDelete(itemId: Number) {
+  const response = await $fetch<FetchItemsResponse>("/api/deleteItem", {
+    method: "DELETE",
+    body: { itemId },
+  });
+
+  items.value = response.items;
+}
+
 async function onSubmit() {
-  const response = await $fetch<AddItemResponse>("/api/addItem", {
+  const response = await $fetch<FetchItemsResponse>("/api/addItem", {
     method: "POST",
     body: { item: item.value },
   });
