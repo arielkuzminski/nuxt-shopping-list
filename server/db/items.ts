@@ -41,7 +41,6 @@ export async function deleteItem(itemId: number) {
   const db = useDatabase("myDB");
   try {
     await db.sql`DELETE FROM items WHERE id=${itemId}`;
-    return getAllItems();
   } catch (error) {
     console.error("Error deleting item:", error);
     throw error;

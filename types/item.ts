@@ -14,7 +14,7 @@ export interface AddItemRequest {
 }
 
 export interface DeleteItemRequest {
-  itemId: number;
+  itemIds: number[];
 }
 
 export interface FetchItemsResponse {

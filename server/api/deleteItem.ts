@@ -1,10 +1,14 @@
 import { DeleteItemRequest } from "~~/types/item";
-import { deleteItem } from "../db/items";
+import { deleteItem, getAllItems } from "../db/items";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<DeleteItemRequest>(event);
 
-  const items = await deleteItem(body.itemId);
+  for (const id of body.itemIds) {
+    const items = await deleteItem(id);
+  }
+
+  const items = await getAllItems();
 
   return {
     success: true,

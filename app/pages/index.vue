@@ -2,6 +2,8 @@
   <div
     class="bg-slate-500 flex flex-col justify-between items-center flex-grow"
   >
+    <p>Selected IDs: {{ selectedIDs }}</p>
+    <button @click="onDelete">Clear completed</button>
     <ul class="p-5">
       <li
         class="text-white flex"
@@ -16,11 +18,10 @@
           >
           <NuxtLink
             :to="{ name: 'users-id', params: { id: item.id } }"
-            class="item"
+            :class="{ 'line-through': item.selected }"
             >{{ item.name }}</NuxtLink
           >
         </div>
-        <button class="" @click="onDelete(item.id)">🗑️</button>
       </li>
       <p v-else>List is empty</p>
     </ul>
@@ -56,6 +57,10 @@ items.value =
     selected: false,
   })) || [];
 
+const selectedIDs = computed(() => {
+  return items.value.filter((item) => item.selected).map((item) => item.id);
+});
+
 function onItemSelected(item: ItemUI) {
   console.log("Item selected", item.id);
   if (item.selected) {
@@ -65,10 +70,13 @@ function onItemSelected(item: ItemUI) {
   }
 }
 
-async function onDelete(itemId: Number) {
+async function onDelete() {
+  console.log("on delete", ...selectedIDs.value);
   const response = await $fetch<FetchItemsResponse>("/api/deleteItem", {
     method: "DELETE",
-    body: { itemId },
+    body: {
+      itemIds: [...selectedIDs.value],
+    },
   });
 
   items.value = response.items.map((item) => ({
