@@ -1,43 +1,47 @@
 <template>
-  <div
-    class="bg-slate-500 flex flex-col justify-between items-center flex-grow"
-  >
-    <p>Selected IDs: {{ selectedIDs }}</p>
-    <button @click="onDelete">Clear completed</button>
-    <ul class="p-5">
-      <li
-        class="text-white flex"
-        v-for="item in items || []"
-        v-if="items.length"
-        :key="item.id"
+  <div class="flex flex-col justify-between items-center flex-grow">
+    <div class="flex justify-center flex-col items-center">
+      <button
+        class="bg-transparent text-gray-400 border-gray-400 border-2 rounded-md p-2 flex-grow min-w-20 m-2"
+        @click="onDelete"
       >
-        <div class="flex mb-2" @click="onItemSelected(item)">
-          <label
-            class="border-green-400 border-2 h-7 w-7 flex hover:cursor-pointer mr-2"
-            ><span v-show="item.selected">✔️</span></label
-          >
-          <NuxtLink
-            :to="{ name: 'users-id', params: { id: item.id } }"
-            :class="{ 'line-through': item.selected }"
-            >{{ item.name }}</NuxtLink
-          >
-        </div>
-      </li>
-      <p v-else>List is empty</p>
-    </ul>
-    <form>
+        Clear completed 🗑
+      </button>
+      <ul class="p-5">
+        <li
+          class="text-white flex"
+          v-for="item in items || []"
+          v-if="items.length"
+          :key="item.id"
+        >
+          <div class="flex mb-2 text-2xl" @click="onItemSelected(item)">
+            <label
+              class="border-blue-400 border-2 size-8 flex hover:cursor-pointer mr-2 items-center justify-center p-4"
+              ><span class="emoji-fill" v-show="item.selected">✔️</span></label
+            >
+            <NuxtLink
+              :to="{ name: 'users-id', params: { id: item.id } }"
+              :class="{ 'line-through': item.selected }"
+              >{{ item.name }}</NuxtLink
+            >
+          </div>
+        </li>
+        <p class="text-gray-400" v-else>List is empty</p>
+      </ul>
+    </div>
+    <form class="mb-5 flex items-center justify-center">
       <input
         type="text"
-        class="bg-gray-700 rounded-md p-2 mr-1 mb-5 text-gray-400"
+        class="bg-gray-700 rounded-md p-2 mr-1 text-gray-400"
         v-model="item"
         placeholder="Add new product..."
       />
       <button
         type="submit"
-        class="bg-gray-700 rounded-md p-2 text-gray-400"
+        class="bg-gray-700 text-gray-400 size-10 rounded-md text-3xl justify-center align-middle items-center"
         @click.prevent="onSubmit"
       >
-        ➕
+        +
       </button>
     </form>
   </div>
@@ -71,7 +75,7 @@ function onItemSelected(item: ItemUI) {
 }
 
 async function onDelete() {
-  console.log("on delete", ...selectedIDs.value);
+  if (!selectedIDs.value.length) return;
   const response = await $fetch<FetchItemsResponse>("/api/deleteItem", {
     method: "DELETE",
     body: {
@@ -97,3 +101,10 @@ async function onSubmit() {
   item.value = ""; // Clear the input field after submission
 }
 </script>
+
+<style lang="css" scoped>
+.emoji-fill {
+  color: transparent;
+  text-shadow: 0 0 0 #60a5fa;
+}
+</style>
