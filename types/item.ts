@@ -3,6 +3,12 @@ export interface Item {
   name: string;
 }
 
+export interface ItemUI {
+  id: number;
+  name: string;
+  selected: boolean;
+}
+
 export interface AddItemRequest {
   item: string;
 }

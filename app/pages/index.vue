@@ -1,36 +1,68 @@
 <template>
-  <div>
-    <ul>
-      <li class="list" v-for="item in items || []" :key="item.id">
-        <NuxtLink
-          :to="{ name: 'users-id', params: { id: item.id } }"
-          class="item"
-          >{{ item.name }}</NuxtLink
-        >
-        <button class="item-delete" @click="onDelete(item.id)">X</button>
+  <div
+    class="bg-slate-500 flex flex-col justify-between items-center flex-grow"
+  >
+    <ul class="p-5">
+      <li
+        class="text-white flex"
+        v-for="item in items || []"
+        v-if="items.length"
+        :key="item.id"
+      >
+        <div class="flex mb-2" @click="onItemSelected(item)">
+          <label
+            class="border-green-400 border-2 h-7 w-7 flex hover:cursor-pointer mr-2"
+            ><span v-show="item.selected">✔️</span></label
+          >
+          <NuxtLink
+            :to="{ name: 'users-id', params: { id: item.id } }"
+            class="item"
+            >{{ item.name }}</NuxtLink
+          >
+        </div>
+        <button class="" @click="onDelete(item.id)">🗑️</button>
       </li>
+      <p v-else>List is empty</p>
     </ul>
-  </div>
-  <div>
     <form>
-      <input type="text" v-model="item" placeholder="Type something..." />
-      <button type="submit" @click.prevent="onSubmit">Submit</button>
+      <input
+        type="text"
+        class="bg-gray-700 rounded-md p-2 mr-1 mb-5 text-gray-400"
+        v-model="item"
+        placeholder="Add new product..."
+      />
+      <button
+        type="submit"
+        class="bg-gray-700 rounded-md p-2 text-gray-400"
+        @click.prevent="onSubmit"
+      >
+        ➕
+      </button>
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Item, FetchItemsResponse } from "../../types/item";
+import type { Item, FetchItemsResponse, ItemUI } from "../../types/item";
 
 const item = ref(""); // State for the input field
-const items = ref<Item[]>([]);
+const items = ref<ItemUI[]>([]);
 
 // Fetch items - API returns Item[] directly
 const { data } = await useFetch<Item[]>("/api/getItems");
-items.value = data.value || [];
+items.value =
+  data.value?.map((item) => ({
+    ...item,
+    selected: false,
+  })) || [];
 
-function onItemSelected(itemId: Number) {
-  console.log("Item selected", itemId);
+function onItemSelected(item: ItemUI) {
+  console.log("Item selected", item.id);
+  if (item.selected) {
+    item.selected = false;
+  } else {
+    item.selected = true;
+  }
 }
 
 async function onDelete(itemId: Number) {
@@ -39,7 +71,10 @@ async function onDelete(itemId: Number) {
     body: { itemId },
   });
 
-  items.value = response.items;
+  items.value = response.items.map((item) => ({
+    ...item,
+    selected: false,
+  }));
 }
 
 async function onSubmit() {
@@ -47,32 +82,10 @@ async function onSubmit() {
     method: "POST",
     body: { item: item.value },
   });
-  items.value = response.items;
+  items.value = response.items.map((item) => ({
+    ...item,
+    selected: false,
+  }));
   item.value = ""; // Clear the input field after submission
 }
 </script>
-
-<style scoped>
-.list {
-  padding: 1rem;
-  margin: 1rem;
-}
-
-.item {
-  border: 1px solid gray;
-  color: white;
-  background-color: gray;
-  padding: 1rem;
-  margin: 1rem;
-}
-
-.item-delete {
-  color: white;
-  background-color: red;
-  border: none;
-}
-
-.item-delete:hover {
-  cursor: pointer;
-}
-</style>

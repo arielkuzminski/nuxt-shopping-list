@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-gray-800 h-screen flex justify-center">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
