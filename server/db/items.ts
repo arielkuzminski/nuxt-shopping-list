@@ -1,11 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 
-const url = process.env.SUPABASE_URL!;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const config = useRuntimeConfig();
+const url = config.public.supabaseUrl as string;
+const serviceRoleKey = config.supabaseServiceRoleKey as string;
 
 if (!url || !serviceRoleKey) {
   throw new Error(
-    "Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in environment"
+    "Missing SUPABASE_URL (public.supabaseUrl) or SUPABASE_SERVICE_ROLE_KEY (runtimeConfig.supabaseServiceRoleKey)"
   );
 }
 
