@@ -21,10 +21,11 @@
                 >✔️</span
               ></label
             >
-            <NuxtLink
+            <span
               :to="{ name: 'users-id', params: { id: item.id } }"
+              class="hover:cursor-pointer"
               :class="{ 'line-through': item.isCompleted }"
-              >{{ item.name }}</NuxtLink
+              >{{ item.name }}</span
             >
           </div>
         </li>
