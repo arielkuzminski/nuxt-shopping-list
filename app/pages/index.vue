@@ -2,21 +2,21 @@
   <div class="flex flex-col justify-between items-center flex-grow">
     <div class="flex justify-center flex-col items-center">
       <button
-        class="bg-transparent text-gray-400 border-gray-400 border-2 rounded-md p-2 flex-grow min-w-20 m-2"
+        class="bg-transparent dark:text-gray-400 dark:border-gray-400 border-2 rounded-md p-2 flex-grow min-w-20 m-2"
         @click="onDelete"
       >
         Clear completed 🗑
       </button>
       <ul class="p-5">
         <li
-          class="text-white flex"
+          class="dark:text-white flex"
           v-for="item in items || []"
           v-if="items.length"
           :key="item.id"
         >
           <div class="flex mb-2 text-2xl" @click="onItemSelected(item)">
             <label
-              class="border-blue-400 border-2 size-8 flex hover:cursor-pointer mr-2 items-center justify-center p-4"
+              class="dark:border-blue-400 border-2 size-8 flex hover:cursor-pointer mr-2 items-center justify-center p-4"
               ><span class="emoji-fill" v-show="item.isCompleted"
                 >✔️</span
               ></label
@@ -29,19 +29,19 @@
             >
           </div>
         </li>
-        <p class="text-gray-400" v-else>List is empty</p>
+        <p class="dark:text-gray-400" v-else>List is empty</p>
       </ul>
     </div>
     <form class="mb-5 flex items-center justify-center">
       <input
         type="text"
-        class="bg-gray-700 rounded-md p-2 mr-1 text-gray-400"
+        class="dark:bg-gray-700 rounded-md p-2 mr-2 border-2 border-solid dark:text-gray-400 dark:border-gray-400"
         v-model="item"
         placeholder="Add new product..."
       />
       <button
         type="submit"
-        class="bg-gray-700 text-gray-400 size-10 rounded-md text-3xl justify-center align-middle items-center"
+        class="dark:bg-gray-700 dark:text-gray-400 size-11 rounded-md text-3xl justify-center align-middle items-center border-2 border-solid dark:border-gray-400"
         @click.prevent="onSubmit"
       >
         +

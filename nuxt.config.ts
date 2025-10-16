@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     port: 3000,
     host: "0.0.0.0", // do not put localhost (only accessible from the host machine)
   },
-  modules: ["@nuxtjs/tailwindcss"],
+  modules: ["@nuxtjs/tailwindcss", "@nuxtjs/color-mode"],
   tailwindcss: {
     exposeConfig: true,
     viewer: true,
