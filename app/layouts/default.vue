@@ -1,6 +1,6 @@
 <template>
   <div class="container flex flex-col">
-    <NuxtLink to="/">Return to main page</NuxtLink>
+    <!-- <NuxtLink class="text-blue-400" to="/">Home</NuxtLink> -->
     <slot />
   </div>
 </template>

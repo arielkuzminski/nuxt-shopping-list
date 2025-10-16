@@ -1,12 +1,15 @@
-export interface Item {
+export interface ItemDTO {
   id: number;
   name: string;
+  date_created: string; // ISO string (timestamptz)
+  is_completed: boolean;
+  date_completed?: string | null;
 }
 
 export interface ItemUI {
   id: number;
   name: string;
-  selected: boolean;
+  isCompleted: boolean;
 }
 
 export interface AddItemRequest {
@@ -17,7 +20,11 @@ export interface DeleteItemRequest {
   itemIds: number[];
 }
 
+export interface CompleteItemRequest {
+  item: ItemUI;
+}
+
 export interface FetchItemsResponse {
   success: boolean;
-  items: Item[];
+  items: ItemDTO[];
 }

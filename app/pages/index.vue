@@ -17,11 +17,13 @@
           <div class="flex mb-2 text-2xl" @click="onItemSelected(item)">
             <label
               class="border-blue-400 border-2 size-8 flex hover:cursor-pointer mr-2 items-center justify-center p-4"
-              ><span class="emoji-fill" v-show="item.selected">✔️</span></label
+              ><span class="emoji-fill" v-show="item.isCompleted"
+                >✔️</span
+              ></label
             >
             <NuxtLink
               :to="{ name: 'users-id', params: { id: item.id } }"
-              :class="{ 'line-through': item.selected }"
+              :class="{ 'line-through': item.isCompleted }"
               >{{ item.name }}</NuxtLink
             >
           </div>
@@ -48,30 +50,36 @@
 </template>
 
 <script setup lang="ts">
-import type { Item, FetchItemsResponse, ItemUI } from "../../types/item";
+import type { ItemDTO, FetchItemsResponse, ItemUI } from "../../types/item";
 
 const item = ref(""); // State for the input field
 const items = ref<ItemUI[]>([]);
 
 // Fetch items - API returns Item[] directly
-const { data } = await useFetch<Item[]>("/api/getItems");
+const { data } = await useFetch<ItemDTO[]>("/api/getItems");
 items.value =
   data.value?.map((item) => ({
-    ...item,
-    selected: false,
+    id: item.id,
+    name: item.name,
+    isCompleted: item.is_completed,
   })) || [];
 
 const selectedIDs = computed(() => {
-  return items.value.filter((item) => item.selected).map((item) => item.id);
+  return items.value.filter((item) => item.isCompleted).map((item) => item.id);
 });
 
-function onItemSelected(item: ItemUI) {
-  console.log("Item selected", item.id);
-  if (item.selected) {
-    item.selected = false;
+async function onItemSelected(item: ItemUI) {
+  if (item.isCompleted) {
+    item.isCompleted = false;
   } else {
-    item.selected = true;
+    item.isCompleted = true;
   }
+  await $fetch("/api/completeItem", {
+    method: "PUT",
+    body: {
+      item,
+    },
+  });
 }
 
 async function onDelete() {
@@ -85,7 +93,7 @@ async function onDelete() {
 
   items.value = response.items.map((item) => ({
     ...item,
-    selected: false,
+    isCompleted: false,
   }));
 }
 
@@ -96,7 +104,7 @@ async function onSubmit() {
   });
   items.value = response.items.map((item) => ({
     ...item,
-    selected: false,
+    isCompleted: false,
   }));
   item.value = ""; // Clear the input field after submission
 }
