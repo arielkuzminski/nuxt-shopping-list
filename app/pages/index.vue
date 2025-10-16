@@ -53,17 +53,15 @@
 <script setup lang="ts">
 import type { ItemDTO, FetchItemsResponse, ItemUI } from "../../types/item";
 
+const { mapItems } = useItems();
+
 const item = ref(""); // State for the input field
 const items = ref<ItemUI[]>([]);
 
 // Fetch items - API returns Item[] directly
 const { data } = await useFetch<ItemDTO[]>("/api/getItems");
-items.value =
-  data.value?.map((item) => ({
-    id: item.id,
-    name: item.name,
-    isCompleted: item.is_completed,
-  })) || [];
+
+items.value = mapItems(data.value || []);
 
 const selectedIDs = computed(() => {
   return items.value.filter((item) => item.isCompleted).map((item) => item.id);
@@ -92,10 +90,7 @@ async function onDelete() {
     },
   });
 
-  items.value = response.items.map((item) => ({
-    ...item,
-    isCompleted: false,
-  }));
+  items.value = mapItems(response.items || []);
 }
 
 async function onSubmit() {
@@ -103,11 +98,9 @@ async function onSubmit() {
     method: "POST",
     body: { item: item.value },
   });
-  items.value = response.items.map((item) => ({
-    ...item,
-    isCompleted: false,
-  }));
-  item.value = ""; // Clear the input field after submission
+  items.value = mapItems(response.items || []);
+  item.value = "";
+  // Clear the input field after submission
 }
 </script>
 
