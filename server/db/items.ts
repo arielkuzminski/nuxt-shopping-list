@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { ItemUI } from "~~/types/item";
+import type { ItemUI } from "../../app/types/item";
 
 const config = useRuntimeConfig();
 const url = config.public.supabaseUrl as string;
@@ -38,7 +38,7 @@ export async function getAllItems() {
   try {
     const { data, error } = await supabase
       .from("items")
-      .select("id, name, date_created, is_completed")
+      .select("id, name, date_created, is_completed, label")
       .order("id", { ascending: true });
     if (error) {
       console.error("Error fetching items:", error);
@@ -51,12 +51,12 @@ export async function getAllItems() {
   }
 }
 
-export async function addNewItem(name: string) {
+export async function addNewItem(name: string, label?: string | null) {
   try {
     const { data, error } = await supabase
       .from("items")
-      .insert({ name })
-      .select("id, name");
+      .insert({ name, label })
+      .select("id, name, label");
     if (error) {
       console.error("Error adding item:", error);
       throw error;
@@ -70,20 +70,18 @@ export async function addNewItem(name: string) {
 }
 
 export async function completeItem(item: ItemUI) {
-  console.log(item);
   try {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("items")
       .update({ is_completed: !!item.isCompleted })
       .eq("id", item.id);
     if (error) {
-      console.error("Error adding item:", error);
+      console.error("Error updating item:", error);
       throw error;
     }
-    // return full list (same behavior as previous)
     return getAllItems();
   } catch (error) {
-    console.error("Error adding item:", error);
+    console.error("Error updating item:", error);
     throw error;
   }
 }

@@ -1,17 +1,18 @@
-import { DeleteItemRequest } from "~~/types/item";
-import { deleteItem, getAllItems } from "../db/items";
+import type { DeleteItemRequest } from '../../app/types/item';
+import { deleteItem, getAllItems } from '../db/items';
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<DeleteItemRequest>(event);
 
-  for (const id of body.itemIds) {
-    const items = await deleteItem(id);
+  // Validation
+  if (!Array.isArray(body.itemIds) || body.itemIds.length === 0) {
+    return validationError('Item IDs must be a non-empty array');
   }
+
+  // Delete all items in parallel
+  await Promise.all(body.itemIds.map(id => deleteItem(id)));
 
   const items = await getAllItems();
 
-  return {
-    success: true,
-    items,
-  };
+  return successResponse({ items });
 });

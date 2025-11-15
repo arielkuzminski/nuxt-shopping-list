@@ -1,5 +1,6 @@
-import { getAllItems } from "../db/items";
+import { getAllItems } from '../db/items';
 
 export default defineEventHandler(async () => {
-  return getAllItems();
+  const items = await getAllItems();
+  return items;
 });
