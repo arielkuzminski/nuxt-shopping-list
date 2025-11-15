@@ -1,5 +1,5 @@
 <template>
-  <div class="container flex flex-col">
+  <div class="container flex flex-col h-full">
     <div class="flex justify-end mr-3">
       <ClientOnly v-if="!colorMode?.forced">
         <button @click="isDark = !isDark" class="text-xl">
